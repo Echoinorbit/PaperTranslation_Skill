@@ -1,0 +1,11 @@
+﻿paper,scope,selected_source_pages,source_pdf_total_pages,source_page,source_blocks,missing_block_count,missing_block_ids,translation_items,unplaced_item_count,mode,first_output_page,last_output_page,output_pdf_total_pages,collision_count,collision_details,out_of_page_count,out_of_page_details,comparison
+SkySense,excerpt,1-3,12,1,17,0,,11,0,L2,1,1,4,0,,0,,comparisons/SkySense-p001.png
+SkySense,excerpt,1-3,12,2,20,0,,10,0,L0,2,2,4,0,,0,,comparisons/SkySense-p002.png
+SkySense,excerpt,1-3,12,3,29,0,,14,0,L2,3,4,4,0,,0,,comparisons/SkySense-p003.png
+DETR,excerpt,5-6,17,5,23,0,,12,0,L0,1,1,2,0,,0,,comparisons/DETR-p005.png
+DETR,excerpt,5-6,17,6,27,0,,6,0,L0,2,2,2,0,,0,,comparisons/DETR-p006.png
+GenCD,excerpt,1-2,9,1,14,0,,13,0,L0,1,1,2,0,,0,,comparisons/GenCD-p001.png
+GenCD,excerpt,1-2,9,2,14,0,,16,0,L2,2,2,2,0,,0,,comparisons/GenCD-p002.png
+SPGAN,excerpt,10-12,17,10,13,0,,13,0,L0,1,1,3,0,,0,,comparisons/SPGAN-p010.png
+SPGAN,excerpt,10-12,17,11,9,0,,7,0,L0,2,2,3,0,,0,,comparisons/SPGAN-p011.png
+SPGAN,excerpt,10-12,17,12,8,0,,7,0,L0,3,3,3,0,,0,,comparisons/SPGAN-p012.png

@@ -1,0 +1,16 @@
+.work/
+__pycache__/
+.venv/
+
+# The publisher editions and their translations are local benchmark fixtures.
+/Paper_Translation_Stimulation/AAAI2026-GenCD.pdf
+/Paper_Translation_Stimulation/CVPR2024-SkySense.pdf
+/Paper_Translation_Stimulation/ECCV2020-DETR.pdf
+/Paper_Translation_Stimulation/TGRS2023-SPGAN-DA.pdf
+/Paper_Translation_Stimulation/round-01/*.pdf
+/Paper_Translation_Stimulation/round-01/comparisons/
+/Paper_Translation_Stimulation/round-01/upstream/
+/benchmarks/translations/DETR.json
+/benchmarks/translations/GenCD.json
+/benchmarks/translations/SkySense.json
+/benchmarks/translations/SPGAN.json

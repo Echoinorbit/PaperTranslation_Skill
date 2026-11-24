@@ -1,0 +1,133 @@
+{
+  "source": "MetSim-JOSS-2020.pdf",
+  "terms": {},
+  "pages": [
+    {
+      "page": 2,
+      "visual_reviewed": true,
+      "items": [
+        {
+          "kind": "heading",
+          "zh": "JOSS　开源软件期刊",
+          "target": [
+            22,
+            17,
+            260,
+            46
+          ],
+          "size": 20,
+          "covers": []
+        },
+        {
+          "kind": "caption",
+          "zh": "MetSim · 气象数据估算与时间分解　｜　原第 2 页选译",
+          "target": [
+            24,
+            51,
+            545,
+            70
+          ],
+          "size": 11,
+          "covers": []
+        },
+        {
+          "kind": "figure",
+          "zh": "图 1　MetSim 输入与输出示例。左侧逐日数值与若干参数共同作为输入，生成右侧逐小时输出。绘图所用示例数据收录于 MetSim 代码仓库。\n左为逐日输入：气温（°C）、降水量（mm/日）。右为日内输出示例：上排为气温（°C）、降水量（mm/小时），下排为短波辐射（W/m²）、相对湿度（%）。横轴均为日期。",
+          "target": [
+            165,
+            95,
+            553,
+            269
+          ],
+          "size": 9.5,
+          "covers": [
+            "p2b1"
+          ],
+          "bbox": [
+            165,
+            95,
+            553,
+            269
+          ],
+          "caption_box": [
+            166,
+            277,
+            553,
+            340
+          ]
+        },
+        {
+          "kind": "text",
+          "zh": "MetSim 采用山地小气候模拟器（MTCLIM）和可变下渗容量（VIC）水文模型第 4 版内置的驱动数据预处理程序所用的方法（Bohn 等，2013；Liang、Lettenmaier、Wood 与 Burges，1994；Thornton 与 Running，1999）。这两种工具各有不足，促使我们开发了 MetSim。MTCLIM 软件自 2003 年以来未再更新，也未实现模型按日内时间步长运行所需的驱动数据分解程序。VIC 模型的驱动程序算法经过修改，较新的版本已移除该预处理程序。我们注意到，用于估算和分解驱动数据的程序通常针对具体需要临时开发，所用流程和算法却相近。我们希望通过 MetSim 规范驱动数据的生成过程，同时也为其他人扩充通用例程提供基础。",
+          "target": [
+            166,
+            346,
+            553,
+            468
+          ],
+          "size": 10,
+          "covers": [
+            "p2b2"
+          ]
+        },
+        {
+          "kind": "text",
+          "zh": "MetSim 在以往工具的基础上提供了新的工作流程。它通过可扩展的并行计算提高性能，引入新的输入输出例程，支持从中断处精确续算，并提供可纳入新功能的可扩展架构。VIC 的预处理程序要求使用经纬度网格，而 MetSim 可以在任意空间配置和空间尺度上运行。我们设计 MetSim 时考虑了如何融入更广泛的 Python 科学计算生态，采用了 xarray（Hoyer 与 Hamman，2017）、dask（Rocklin，2015）、pandas（McKinney，2010）和 numba（Lam、Pitrou 与 Seibert，2015）等常用包。",
+          "target": [
+            166,
+            478,
+            553,
+            580
+          ],
+          "size": 10,
+          "covers": [
+            "p2b3"
+          ]
+        },
+        {
+          "kind": "heading",
+          "zh": "架构与性能",
+          "target": [
+            166,
+            598,
+            551,
+            623
+          ],
+          "size": 14,
+          "covers": [
+            "p2b4"
+          ]
+        },
+        {
+          "kind": "text",
+          "zh": "MetSim 的架构沿用常见设计：由模型驱动程序协调高层操作，把主要计算交给若干模块。顶层驱动程序处理全部输入输出例程以及作业调度和并行计算。图 2 示意了 MetSim 的架构。MetSim 提供命令行工具，也可作为 Python 模块通过 API 调用。命令行工具通过配置文件和命令行选项提供访问驱动程序的接口。",
+          "target": [
+            166,
+            632,
+            553,
+            715
+          ],
+          "size": 10,
+          "covers": [
+            "p2b5"
+          ]
+        },
+        {
+          "kind": "caption",
+          "zh": "Andrew R. Bennett、Joseph J. Hamman、Bart Nijssen（2020）。《MetSim：用于气象数据估算与时间分解的 Python 包》。Journal of Open Source Software，5(47)，2042。https://doi.org/10.21105/joss.02042　｜　原第 2 页。\n原文 CC BY 4.0（https://creativecommons.org/licenses/by/4.0/）；本页经中文翻译、重新排版并添加阅读手记。",
+          "target": [
+            35,
+            756,
+            559,
+            806
+          ],
+          "size": 8.2,
+          "covers": [
+            "p2b6"
+          ]
+        }
+      ],
+      "columns": 1
+    }
+  ]
+}
