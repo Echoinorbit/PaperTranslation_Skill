@@ -9,7 +9,7 @@ import pymupdf as pdf
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "skills" / "translate-paper-zh" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
-from annotate import annotate, HIGHLIGHT_OPACITY, INK, MARGIN, PAPER_RGB, YELLOW_MARKER, rgb
+from annotate import annotate, compact_source, HIGHLIGHT_OPACITY, INK, MARGIN, PAPER_RGB, YELLOW_MARKER, rgb
 
 
 class ManuscriptTests(unittest.TestCase):
@@ -45,6 +45,30 @@ class ManuscriptTests(unittest.TestCase):
         data = {"base_sha256":digest or self.digest,
                 "notes":notes if notes is not None else [self.first]}
         self.notes.write_text(json.dumps(data,ensure_ascii=False),encoding="utf-8")
+
+    def test_source_keeps_locators_with_their_cited_pages(self):
+        cases = [
+            (14, "原第 14 页 · 式 (A)；原第 17 页 · 表 A", "p. 14 · 式(A) / p. 17 · 表A"),
+            (1, "原第 1 页 · 摘要；原第 2 页 · 表 1；原第 3 页 · §2",
+             "p. 1 · 摘要 / p. 2 · 表1 / p. 3 · §2"),
+            (13, "原第 13 页 · §A；原第 14 页 · 图 A（b，c）", "p. 13 · §A / p. 14 · 图A(b,c)"),
+            (9, "原第 8 页 · 原第 9 页 · §5", "pp. 8–9 · §5"),
+            (9, "p. 8 · §5；p. 9 · §5", "p. 8 · §5 / p. 9 · §5"),
+            (20, "原第 20 页 · §D.2–D.3", "§D.2–D.3"),
+            (3, "原第 3 页 · §3.3 · 表 2", "§3.3 · 表2"),
+            (3, "图 2 · §3.1（原第 4 页）", "图2 / p. 4 · §3.1"),
+            (3, "原第 3 页", ""),
+            (3, "原第 2 页", "p. 2"),
+        ]
+        for page, source, expected in cases:
+            with self.subTest(source=source):
+                self.assertEqual(compact_source(source, page), expected)
+
+        self.manifest([dict(self.first, source="原第 1 页 · 式 (A)；原第 2 页 · 表 A")])
+        annotate(self.clean, self.notes, self.out)
+        with pdf.open(self.out) as manuscript:
+            margin = pdf.Rect(330, 0, manuscript[0].rect.width, manuscript[0].rect.height)
+            self.assertIn("p. 1 · 式(A) / p. 2 · 表A", manuscript[0].get_text(clip=margin))
 
     def test_manuscript_preserves_base_and_writes_searchable_notes(self):
         second = {"page":1, "kind":"idea", "anchor":{"bbox":[232,49,247,62]},
@@ -246,6 +270,13 @@ class ManuscriptTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,problem):
                     annotate(self.clean,self.notes,self.out,notebook_paper=True)
                 self.assertFalse(self.out.exists())
+
+    def test_reference_at_line_break_stays_searchable(self):
+        from annotate import wrap_line
+
+        font = pdf.Font("helv")
+        limit = font.text_length("UNet [", fontsize=10)
+        self.assertEqual(wrap_line("UNet [58]", font, 10, limit, body=True), ["UNet", "[58]"])
 
     def test_references_link_only_the_written_notes(self):
         self.khaki_input()

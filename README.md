@@ -6,7 +6,7 @@
 
 **Read an English paper in Chinese, with room to think on the page.** This Codex skill produces a searchable Chinese reading copy on warm khaki paper. Figures, tables and equations stay close to the translated text. A handwritten note might circle a denominator, compare two rows, or sketch how a method gets from its inputs to its result.
 
-[翻开完整手稿 · Open the 25-page notebook](Paper_Translation_Stimulation/round-07-Open-Canopy/Open-Canopy-CVPR2025-卡其纸精读手稿.pdf) · [试读三张跨学科样页 · Browse three sample pages](#sample-pages)
+[跟读作者的论证 · Follow the authors’ argument](Paper_Translation_Stimulation/round-09-Open-Canopy/Open-Canopy-CVPR2025-论证精读手稿.pdf) · [翻开早期手稿 · Open the earlier notebook](Paper_Translation_Stimulation/round-07-Open-Canopy/Open-Canopy-CVPR2025-卡其纸精读手稿.pdf) · [试读三张跨学科样页 · Browse three sample pages](#sample-pages)
 
 <a id="margin-note"></a>
 

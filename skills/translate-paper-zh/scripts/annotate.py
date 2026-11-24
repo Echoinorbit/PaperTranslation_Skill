@@ -53,7 +53,8 @@ LEGACY_INK = {"evidence": "blue", "calculation": "yellow", "idea": "red"}
 LEGACY_COLORS = {"green": "yellow", "ochre": "red"}
 # Keep compact equations (even with spaces) and model names together when they fit.
 BODY_TOKENS = re.compile(
-    r"(?:[A-Za-zΑ-ω][A-Za-zΑ-ω_\d]*|\d+(?:\.\d+)?)(?:[ \t]*[=+×÷−≈<>≤≥*/^][ \t]*(?:[A-Za-zΑ-ω][A-Za-zΑ-ω_\d]*|\d+(?:\.\d+)?))+"
+    r"\[[0-9]+\]"
+    r"|(?:[A-Za-zΑ-ω][A-Za-zΑ-ω_\d]*|\d+(?:\.\d+)?)(?:[ \t]*[=+×÷−≈<>≤≥*/^][ \t]*(?:[A-Za-zΑ-ω][A-Za-zΑ-ω_\d]*|\d+(?:\.\d+)?))+"
     r"|[\d.()=+/%×÷−≈<>≤≥*^–-]+(?:[ \t]+[\d.()=+/%×÷−≈<>≤≥*^–-]+)*"
     r"|[A-Za-zΑ-ω][A-Za-zΑ-ω\d¹²³\u2070-\u209f]*(?:[./_+–-][A-Za-zΑ-ω\d]+)*|[ \t]+|."
 )
@@ -64,8 +65,15 @@ TEMPLATE_LABEL = re.compile(
     r"|(?:研究设想|研究假设|研究问题|手算|证据|设想|追问)\s*[:：])",
     re.IGNORECASE,
 )
-PAPER_PAGE = re.compile(r"(?:原文?\s*)?第\s*([0-9]+)\s*页|\bp\.?\s*([0-9]+)\b", re.IGNORECASE)
-LOCATOR = re.compile(r"§\s*[\dA-Z]+(?:\.[\dA-Z]+)*|(?:图|表|式)\s*(?:[（(]\s*[A-Za-z0-9.]+\s*[）)]|[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*)")
+PAGE_PATTERN = r"(?:(?:原文?\s*)?第\s*[0-9]+\s*页|(?i:\bp\.?\s*[0-9]+\b))"
+SECTION_ID = r"[\dA-Z]+(?:\.[\dA-Z]+)*"
+PANEL_ID = r"[（(]\s*[A-Za-z0-9.]+(?:\s*[,，–-]\s*[A-Za-z0-9.]+)*\s*[）)]"
+LOCATOR_PATTERN = (
+    rf"摘要|§\s*{SECTION_ID}(?:\s*[–-]\s*{SECTION_ID})?"
+    rf"|(?:图|表|式)\s*(?:{PANEL_ID}|[A-Za-z0-9]+(?:[.-][A-Za-z0-9]+)*(?:\s*{PANEL_ID})?)"
+)
+SOURCE_TOKEN = re.compile(rf"(?P<page>{PAGE_PATTERN})|(?P<locator>{LOCATOR_PATTERN})")
+POSTFIX_PAGE = re.compile(rf"(?P<locator>{LOCATOR_PATTERN})\s*[（(]\s*(?P<page>{PAGE_PATTERN})\s*[）)]")
 
 
 class ManuscriptPen:
@@ -216,15 +224,38 @@ def compact_source(source, page):
     """Use just a paper locator under the handwriting, not a prose caption."""
     if not isinstance(source, str):
         raise ValueError("source must be text")
-    locators = []
-    for match in PAPER_PAGE.finditer(source):
-        n = int(match[1] or match[2])
-        if n != page:
-            locators.append(f"p. {n}")
-    for match in LOCATOR.finditer(source):
-        locator = "".join(match.group().split()).replace("（","(").replace("）",")")
-        locators.append(locator)
-    return " · ".join(dict.fromkeys(locators))
+    # A parenthesized page after a section belongs to that section alone.
+    source = POSTFIX_PAGE.sub(r"\g<page> · \g<locator>", source)
+    groups = []
+    pages, locators = [], []
+    for match in SOURCE_TOKEN.finditer(source):
+        if match["page"]:
+            if locators:
+                groups.append((pages, locators))
+                pages, locators = [], []
+            number = int(re.search(r"[0-9]+", match["page"])[0])
+            if number not in pages:
+                pages.append(number)
+        else:
+            locator = "".join(match["locator"].split()).translate(str.maketrans("（），", "(),"))
+            if locator not in locators:
+                locators.append(locator)
+    groups.append((pages, locators))
+
+    cited_pages = {number for numbers, _ in groups for number in numbers}
+    labels = []
+    for numbers, locations in groups:
+        parts = []
+        if len(numbers) > 1:
+            consecutive = all(b == a + 1 for a, b in zip(numbers, numbers[1:]))
+            page_list = f"{numbers[0]}–{numbers[-1]}" if consecutive else ", ".join(map(str, numbers))
+            parts.append(f"pp. {page_list}")
+        elif numbers and cited_pages != {page}:
+            parts.append(f"p. {numbers[0]}")
+        label = " · ".join(parts + locations)
+        if label and label not in labels:
+            labels.append(label)
+    return " / ".join(labels)
 
 
 def inline_label(page, spec, font):
